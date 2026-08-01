@@ -4,7 +4,7 @@ fn main() -> Result<(), eframe::Error> {
     let options = eframe::NativeOptions::default();
 
     eframe::run_native(
-        "Rust Calculator",
+        "Calculator",
         options,
         Box::new(|_| Ok(Box::new(Calculator::default()))),
     )
