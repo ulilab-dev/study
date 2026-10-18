@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Genre {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  period      String
+  description String
+  imageUrl    String
+  keyArtists  String
+  sortOrder   Int
+  artworks    Artwork[]
+}
+
+model Artwork {
+  id          String      @id @default(cuid())
+  slug        String      @unique
+  title       String
+  artist      String
+  year        String
+  description String
+  imageUrl    String
+  isHighlight Boolean     @default(false)
+  heroCaption String?
+  featured    Boolean     @default(false)
+  width       Float
+  height      Float
+  genreId     String?
+  genre       Genre?      @relation(fields: [genreId], references: [id])
+  roomId      String?
+  room        TourRoom?   @relation(fields: [roomId], references: [id])
+  wall        String?
+  position    Float?
+  audioGuide  AudioGuide?
+}
+
+model TourRoom {
+  id             String    @id @default(cuid())
+  slug           String    @unique
+  name           String
+  description    String
+  wallColor      String
+  floorColor     String
+  sortOrder      Int
+  artworks       Artwork[]
+  hotspots       Hotspot[]
+  targetHotspots Hotspot[] @relation("hotspotTargets")
+}
+
+model Hotspot {
+  id           String   @id @default(cuid())
+  roomId       String
+  room         TourRoom @relation(fields: [roomId], references: [id])
+  x            Float
+  y            Float
+  z            Float
+  label        String
+  targetRoomId String
+  targetRoom   TourRoom @relation("hotspotTargets", fields: [targetRoomId], references: [id])
+}
+
+model AudioGuide {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  narrator      String
+  narration     String
+  audioUrl      String
+  durationLabel String
+  artworkId     String?  @unique
+  artwork       Artwork? @relation(fields: [artworkId], references: [id])
+  sortOrder     Int
+}
